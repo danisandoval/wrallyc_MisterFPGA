@@ -1,7 +1,7 @@
 # WorldRally_MiSTer — ready-to-compile Quartus project
 
 Assembled from the [core project](../core/) + MiSTer Template framework.
-This folder is meant to be **shared into the Windows VM** and compiled there;
+This folder is meant to be **run in a Windows machine or shared into the Windows VM, as I was using a Mac** and compiled there;
 the RTL is developed/simulated on the host side (see `../core/`).
 
 ## Compile (in the Windows VM)
