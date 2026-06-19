@@ -1,0 +1,38 @@
+set_global_assignment -name SDC_FILE WorldRally.sdc
+set_global_assignment -name SYSTEMVERILOG_FILE WorldRally.sv
+
+# core
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/dpram_be.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/tdp_ram.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/wrally_top.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/wrally_video.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/wrally_sprites.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/gaelco_crypt.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/ds5002fp_glue.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/mcs51_core.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/sdram_rom.sv
+
+# core PLL (hand-edited altera_pll wrapper: 96 MHz + 96 MHz @ -2500 ps)
+set_global_assignment -name VERILOG_FILE rtl/pll.v
+set_global_assignment -name VERILOG_FILE rtl/pll/pll_0002.v
+
+# fx68k (Jorge Cwik) - microrom.mem/nanorom.mem at project root
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/fx68k/fx68k.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/fx68k/fx68kAlu.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/fx68k/uaddrPla.sv
+set_global_assignment -name MISC_FILE microrom.mem
+set_global_assignment -name MISC_FILE nanorom.mem
+
+# R8051 (Li Xinbing, Apache-2.0)
+set_global_assignment -name VERILOG_FILE rtl/r8051/r8051.v
+set_global_assignment -name SEARCH_PATH rtl/r8051
+
+# jt6295 (Jose Tejada, GPL3) - INTERPOL=0, no jtframe deps
+set_global_assignment -name VERILOG_FILE rtl/jt6295/jt6295.v
+set_global_assignment -name VERILOG_FILE rtl/jt6295/jt6295_acc.v
+set_global_assignment -name VERILOG_FILE rtl/jt6295/jt6295_adpcm.v
+set_global_assignment -name VERILOG_FILE rtl/jt6295/jt6295_ctrl.v
+set_global_assignment -name VERILOG_FILE rtl/jt6295/jt6295_rom.v
+set_global_assignment -name VERILOG_FILE rtl/jt6295/jt6295_serial.v
+set_global_assignment -name VERILOG_FILE rtl/jt6295/jt6295_sh_rst.v
+set_global_assignment -name VERILOG_FILE rtl/jt6295/jt6295_timing.v

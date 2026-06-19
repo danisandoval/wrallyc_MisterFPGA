@@ -1,0 +1,43 @@
+# Game ROMs — never commit copyrighted ROM data
+*.bin
+*.rom
+*.zip
+*.hex
+*.c01
+*.c03
+*.i07
+*.i09
+*.i11
+*.i13
+
+# Quartus build output
+db/
+incremental_db/
+output_files/
+*.qdb
+*.qpf.bak
+*.qsf.bak
+*.rpt
+*.smsg
+*.summary
+*.pin
+*.fit
+*.map
+*.eda
+*.jdi
+*.pof
+*.sof
+*.stp
+*.cdf
+*.bak
+c5_pin_model_dump.txt
+fmax_summary.txt
+failing_paths.txt
+build_id.v
+
+# Bitstreams: ignore build outputs, but keep released bitstreams
+*.rbf
+!releases/*.rbf
+
+# macOS
+.DS_Store

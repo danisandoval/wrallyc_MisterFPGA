@@ -1,0 +1,58 @@
+World Rally MiSTer FPGA Core
+Third-party components and attributions
+
+-------------------------------------------------------------------------------
+fx68k — MC68000 cycle-accurate core
+  Copyright (c) 2018, 2021 Jorge Cwik
+  License: GNU General Public License v3.0
+  Source: https://github.com/ijor/fx68k
+
+jt6295 — OKI MSM6295 ADPCM sound core
+  Copyright (c) Jotego / José Tejada
+  License: GNU General Public License v3.0 or later
+  Source: https://github.com/jotego/jt6295
+
+R8051 — 8051 compatible CPU core
+  Copyright (c) Li Xinbing
+  License: Apache License 2.0
+  Source: https://github.com/freecores/r8051
+
+MiSTer framework / sys / ascal HQ2x scaler
+  Copyright (c) Sorgelig and contributors
+  Copyright (c) Temlib (ascal.vhd)
+  License: GNU General Public License v2.0 or later
+  Source: https://github.com/MiSTer-devel/Template_MiSTer
+
+-------------------------------------------------------------------------------
+Portions of the RTL were derived from MAME source code
+(BSD 3-Clause License):
+
+  gaelcrpt.cpp       — VRAM decryption algorithm
+    Copyright (c) Manuel Abadia; algorithm courtesy of GAELCO SA
+
+  gaelco_wrally_sprites.cpp — sprite engine reference
+    Copyright (c) Manuel Abadia, Luca Elia, David Haywood
+
+  gaelco_ds5002fp.cpp — DS5002FP subsystem reference
+    Copyright (c) David Haywood
+
+  wrally.cpp — World Rally driver
+    Copyright (c) Manuel Abadia, Mike Coates, Nicola Salmoria,
+                  Miguel Angel Horna
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  3. Neither the name of the copyright holder nor the names of its contributors
+     may be used to endorse or promote products derived from this software
+     without specific prior written permission.
+  THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.
+
+-------------------------------------------------------------------------------
+World Rally hardware copyright (c) 1993 GAELCO SA.
+ROM images are NOT included in this repository and are NOT covered by
+this license. Users must supply their own legally obtained ROMs.
