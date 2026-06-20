@@ -1,6 +1,6 @@
 # World Rally Championship — MiSTer FPGA Core
 
-A fully functional arcade FPGA core for the MiSTer platform, featuring pixel-perfect video and complete audio emulation of Gaelco's World Rally Championship arcade hardware.
+A fully functional arcade FPGA core for the MiSTer platform, based on MAME emulation of Gaelco's World Rally Championship arcade hardware.
 
 ## Directory Structure
 
