@@ -1,0 +1,119 @@
+name: Create Release on RBF Update
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'releases/*.rbf'
+      - 'mra/*.mra'
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get RBF file info
+        id: rbf_info
+        run: |
+          # Find the most recently modified RBF file
+          RBF_FILE=$(find releases -name "*.rbf" -type f -printf '%T@ %p\n' | sort -rn | head -1 | cut -d' ' -f2-)
+          RBF_NAME=$(basename "$RBF_FILE")
+          RBF_SIZE=$(stat -f%z "$RBF_FILE" 2>/dev/null || stat -c%s "$RBF_FILE" 2>/dev/null)
+
+          echo "rbf_path=$RBF_FILE" >> $GITHUB_OUTPUT
+          echo "rbf_name=$RBF_NAME" >> $GITHUB_OUTPUT
+          echo "rbf_size=$RBF_SIZE" >> $GITHUB_OUTPUT
+
+          # Generate checksums
+          SHA256=$(sha256sum "$RBF_FILE" | cut -d' ' -f1)
+          MD5=$(md5sum "$RBF_FILE" | cut -d' ' -f1)
+          echo "sha256=$SHA256" >> $GITHUB_OUTPUT
+          echo "md5=$MD5" >> $GITHUB_OUTPUT
+
+      - name: Generate release tag
+        id: tag
+        run: |
+          # Use date-based versioning: v2026.06.20
+          TAG="v$(date +%Y.%m.%d)"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "date=$(date +'%B %d, %Y')" >> $GITHUB_OUTPUT
+
+      - name: Check if release exists
+        id: check_release
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          if gh release view "$TAG" &>/dev/null; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          # Get commits since last tag or last week
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "HEAD~30")
+          COMMITS=$(git log $LAST_TAG..HEAD --oneline --pretty=format:"- %s" | grep -v "Merge pull" || echo "- Updates to core and bitstream")
+
+          # Build release body
+          cat > /tmp/release_notes.md << 'EOF'
+          ## World Rally Championship MiSTer Core
+
+          **Build Date:** ${{ steps.tag.outputs.date }}
+
+          ### Files
+          - **Bitstream:** `${{ steps.rbf_info.outputs.rbf_name }}`
+          - **Size:** ${{ steps.rbf_info.outputs.rbf_size }} bytes
+
+          ### Checksums
+          ```
+          SHA256: ${{ steps.rbf_info.outputs.sha256 }}
+          MD5:    ${{ steps.rbf_info.outputs.md5 }}
+          ```
+
+          ### Installation
+          1. Copy `${{ steps.rbf_info.outputs.rbf_name }}` to `/media/fat/_Arcade/cores/`
+          2. Copy MRA file to `/media/fat/_Arcade/`
+          3. Copy ROM to `/media/fat/games/mame/`
+          4. Restart MiSTer
+
+          ### Recent Changes
+          $COMMITS
+
+          ---
+          For more details, see the [README](https://github.com/${{ github.repository }}/blob/main/README.md).
+          EOF
+
+          cat /tmp/release_notes.md
+
+      - name: Create release
+        if: steps.check_release.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: 'World Rally Championship ${{ steps.tag.outputs.tag }}'
+          body_path: /tmp/release_notes.md
+          files: |
+            ${{ steps.rbf_info.outputs.rbf_path }}
+            mra/*.mra
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update existing release
+        if: steps.check_release.outputs.exists == 'true'
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          echo "Release $TAG already exists. Skipping creation."
+          echo "To update, manually delete the release on GitHub and push again."
