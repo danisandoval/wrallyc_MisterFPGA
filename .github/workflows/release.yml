@@ -60,38 +60,45 @@ jobs:
 
       - name: Generate release notes
         id: notes
+        env:
+          RBF_NAME: ${{ steps.rbf_info.outputs.rbf_name }}
+          RBF_SIZE: ${{ steps.rbf_info.outputs.rbf_size }}
+          SHA256: ${{ steps.rbf_info.outputs.sha256 }}
+          MD5: ${{ steps.rbf_info.outputs.md5 }}
+          BUILD_DATE: ${{ steps.tag.outputs.date }}
+          REPO: ${{ github.repository }}
         run: |
           # Get commits since last tag or last week
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "HEAD~30")
           COMMITS=$(git log $LAST_TAG..HEAD --oneline --pretty=format:"- %s" | grep -v "Merge pull" || echo "- Updates to core and bitstream")
 
           # Build release body
-          cat > /tmp/release_notes.md << 'EOF'
+          cat > /tmp/release_notes.md << EOF
           ## World Rally Championship MiSTer Core
 
-          **Build Date:** ${{ steps.tag.outputs.date }}
+          **Build Date:** $BUILD_DATE
 
           ### Files
-          - **Bitstream:** `${{ steps.rbf_info.outputs.rbf_name }}`
-          - **Size:** ${{ steps.rbf_info.outputs.rbf_size }} bytes
+          - **Bitstream:** \`$RBF_NAME\`
+          - **Size:** $RBF_SIZE bytes
 
           ### Checksums
-          ```
-          SHA256: ${{ steps.rbf_info.outputs.sha256 }}
-          MD5:    ${{ steps.rbf_info.outputs.md5 }}
-          ```
+          \`\`\`
+          SHA256: $SHA256
+          MD5:    $MD5
+          \`\`\`
 
           ### Installation
-          1. Copy `${{ steps.rbf_info.outputs.rbf_name }}` to `/media/fat/_Arcade/cores/`
-          2. Copy MRA file to `/media/fat/_Arcade/`
-          3. Copy ROM to `/media/fat/games/mame/`
+          1. Copy \`$RBF_NAME\` to \`/media/fat/_Arcade/cores/\`
+          2. Copy MRA file to \`/media/fat/_Arcade/\`
+          3. Copy ROM to \`/media/fat/games/mame/\`
           4. Restart MiSTer
 
           ### Recent Changes
           $COMMITS
 
           ---
-          For more details, see the [README](https://github.com/${{ github.repository }}/blob/main/README.md).
+          For more details, see the [README](https://github.com/$REPO/blob/main/README.md).
           EOF
 
           cat /tmp/release_notes.md
